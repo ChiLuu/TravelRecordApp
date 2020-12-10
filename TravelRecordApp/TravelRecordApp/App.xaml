@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TravelRecordApp.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <Color x:Key="blueColor">#58A5DC</Color>
+            <Color x:Key="whiteColor">#FFFFFF</Color>
+            <!-- This apply a defined Background color and text color to all buttons that is set to use the "normalButton" resource -->
+            <!-- If the style below does not have a name/key, then all the element of the TargetType will be implicitly styled -->
+            <Style x:Key="normalButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{StaticResource blueColor}"/>
+                <Setter Property="TextColor" Value="{StaticResource whiteColor}"/>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
