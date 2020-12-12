@@ -43,6 +43,16 @@ namespace TravelRecordApp.Model
             }
         }
 
+        private string confirmPassword;
+        public string ConfirmPassword
+        {
+            get { return confirmPassword; }
+            set
+            {
+                confirmPassword = value;
+                OnPropertyChanged("ConfirmPassword");
+            }
+        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         public static async Task<Users> GetUserByEmail(string email)
@@ -81,14 +91,29 @@ namespace TravelRecordApp.Model
         }
         public static async void Register(Users user)
         {
-            try
+            if (user.Password != user.ConfirmPassword)
+                await App.Current.MainPage.DisplayAlert("Password Error", "Passwords does not match.", "Ok");
+            else
             {
-                // Get User table from web service and add user
-                await App.MobileService.GetTable<Users>().InsertAsync(user);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
+                try
+                {
+                    var existingUser = await Users.GetUserByEmail(user.Email);
+
+                    if (existingUser == null)
+                    {
+                        // Get User table from web service and add user
+                        await App.MobileService.GetTable<Users>().InsertAsync(user);
+                        await App.Current.MainPage.DisplayAlert("Registered!", "Your account has been registered successfully.", "Ok");
+                        await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                    }
+                    else
+                        await App.Current.MainPage.DisplayAlert("User Exist", "The email is already registered.", "Ok");
+                }
+                catch (Exception ex)
+                {
+                    await App.Current.MainPage.DisplayAlert("Registration Error", "Something went wrong.", "Ok");
+                    Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
+                }
             }
             
         }

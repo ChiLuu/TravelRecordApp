@@ -5,13 +5,13 @@ using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace TravelRecordApp.Model
 {
     public class Post : INotifyPropertyChanged
     {
         private string id;
-
         public string Id
         {
             get { return id; }
@@ -123,6 +123,41 @@ namespace TravelRecordApp.Model
             }
         }
 
+        private Venue venue;
+
+        // JsonIgnore required when inserting Post into DB. Venue is an object and database columns can not store objects.
+        [JsonIgnore]
+        public Venue Venue
+        {
+            get { return venue; }
+            set 
+            { 
+                venue = value;
+
+                if(venue.categories != null)
+                {
+                    var firstCategory = venue.categories.FirstOrDefault();
+
+                    if (firstCategory != null)
+                    {
+                        CategoryId = firstCategory.id;
+                        CategoryName = firstCategory.name;
+                    }
+                }
+                
+                if(venue.location != null)
+                {
+                    Address = venue.location.address;
+                    Distance = venue.location.distance;
+                    Latitude = venue.location.lat;
+                    Longitude = venue.location.lng;
+                }
+                
+                VenueName = venue.name;
+                UserId = App.user.Id;
+                OnPropertyChanged("Venue");
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

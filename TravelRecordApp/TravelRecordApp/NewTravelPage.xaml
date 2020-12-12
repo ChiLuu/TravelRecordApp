@@ -5,7 +5,8 @@
 
     <ContentPage.ToolbarItems>
         <ToolbarItem x:Name="NewTravelSave" Text="Save" IconImageSource="save.png"
-                     Clicked="NewTravelSave_Clicked"/>
+                     Command="{Binding PostCommand}"
+                     CommandParameter="{Binding Post}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout x:Name="containerStackLayout">
@@ -16,7 +17,8 @@
                     Text="{Binding Experience, Mode=TwoWay}"/>
             <ListView x:Name="venueListView"
                       Margin="20, 5"
-                      HorizontalOptions="FillAndExpand">
+                      HorizontalOptions="FillAndExpand"
+                      SelectedItem="{Binding Venue, Mode=TwoWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
