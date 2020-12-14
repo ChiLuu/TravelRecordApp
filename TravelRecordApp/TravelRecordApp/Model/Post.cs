@@ -161,17 +161,50 @@ namespace TravelRecordApp.Model
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public static async void Insert(Post post)
+        public static async Task<bool> Insert(Post post)
         {
-            await App.MobileService.GetTable<Post>().InsertAsync(post);
+            try
+            {
+                await App.MobileService.GetTable<Post>().InsertAsync(post);
+                await App.Current.MainPage.DisplayAlert("Success", "Your Travel Post was added", "Ok");
+                return true;
+            }
+            catch (Exception e)
+            {
+                await App.Current.MainPage.DisplayAlert("Error", "Something went wrong. Unable to post your entry", "Ok");
+                Console.WriteLine(e.Message + "\n" + e.StackTrace);
+                return false;
+            }
         }
-        public static async void Update(Post post)
+        public static async Task<bool> Update(Post post)
         {
-            await App.MobileService.GetTable<Post>().UpdateAsync(post);
+            try
+            {
+                await App.MobileService.GetTable<Post>().UpdateAsync(post);
+                await App.Current.MainPage.DisplayAlert("Success", "Your Travel Post was updated", "Ok");
+                return true;
+            }
+            catch (Exception e)
+            {
+                await App.Current.MainPage.DisplayAlert("Error", "Something went wrong. Unable to update your entry", "Ok");
+                Console.WriteLine(e.Message + "\n" + e.StackTrace);
+                return false;
+            }
         }
-        public static async void Delete(Post post)
+        public static async Task<bool> Delete(Post post)
         {
-            await App.MobileService.GetTable<Post>().DeleteAsync(post);
+            try
+            {
+                await App.MobileService.GetTable<Post>().DeleteAsync(post);
+                await App.Current.MainPage.DisplayAlert("Success", "Your Travel Post was deleted", "Ok");
+                return true;
+            }
+            catch (Exception e)
+            {
+                await App.Current.MainPage.DisplayAlert("Error", "Something went wrong. Unable to delete your entry", "Ok");
+                Console.WriteLine(e.Message + "\n" + e.StackTrace);
+                return false;
+            }
         }
 
         public static async Task<List<Post>> GetUserPosts()
@@ -217,5 +250,19 @@ namespace TravelRecordApp.Model
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        // IValueConverter
+        private DateTimeOffset createdAt;
+
+        public DateTimeOffset CreatedAt
+        {
+            get { return createdAt; }
+            set 
+            { 
+                createdAt = value;
+                OnPropertyChanged("CreatedAt");
+            }
+        }
+
     }
 }

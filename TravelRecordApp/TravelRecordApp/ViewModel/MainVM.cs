@@ -1,27 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Windows.Input;
 using TravelRecordApp.Model;
-using TravelRecordApp.ViewModel.Commands;
+using Xamarin.Forms;
 
 namespace TravelRecordApp.ViewModel
 {
     public class MainVM : INotifyPropertyChanged
     {
         private Users user;
+        private string email;
+        private string password;
+        private bool isBusy;
+
         public Users User 
         {
             get { return user; }
             set
             {
                 user = value;
-                OnPropertyChanged("User");
+                OnPropertyChanged();
             } 
         }
-        public LoginCommand LoginCommand { get; set; }
-
-        private string email;
+        // public LoginCommand LoginCommand { get; set; }
+        // public RegisterNavigationCommand RegisterNavigationCommand { get; set; }
+        public Command LoginCommand { get; private set; }
+        public Command RegisterNavigationCommand { get; private set; }
 
         public string Email
         {
@@ -34,11 +41,9 @@ namespace TravelRecordApp.ViewModel
                     Email = this.Email,
                     Password = this.Password
                 };
-                OnPropertyChanged("Email");
+                OnPropertyChanged();
             }
         }
-
-        private string password;
 
         public string Password
         {
@@ -51,15 +56,24 @@ namespace TravelRecordApp.ViewModel
                     Email = this.Email,
                     Password = this.Password
                 };
-                OnPropertyChanged("Password");
+                OnPropertyChanged();
             }
         }
 
-        public RegisterNavigationCommand RegisterNavigationCommand { get; set; }
+        public bool IsBusy
+        {
+            get { return isBusy; }
+            set 
+            { 
+                isBusy = value;
+                OnPropertyChanged();
+                LoginCommand.ChangeCanExecute();
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void OnPropertyChanged(string propertyName)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -67,22 +81,41 @@ namespace TravelRecordApp.ViewModel
         public MainVM()
         {
             User = new Users();
-            LoginCommand = new LoginCommand(this);
-            RegisterNavigationCommand = new RegisterNavigationCommand(this);
+            
+            RegisterNavigationCommand = new Command(
+                    async () => await App.Current.MainPage.Navigation.PushAsync(new RegisterPage()));
+
+            LoginCommand = new Command(
+                execute: () =>
+                {
+                    Login();
+                },
+                canExecute: () =>
+                {
+                    if (user == null || IsBusy)
+                        return false;
+                    else if (string.IsNullOrEmpty(user.Email) || string.IsNullOrEmpty(user.Password))
+                        return false;
+                    else
+                        return true;
+                });
         }
 
         public async void Login()
         {
+            IsBusy = true;
             bool canLogin = await Users.Login(User.Email, User.Password);
             if (canLogin)
                 await App.Current.MainPage.Navigation.PushAsync(new HomePage());
             else
                 await App.Current.MainPage.DisplayAlert("Error", "Email or password are incorrect", "Ok");
+
+            IsBusy = false;
         }
 
-        public async void Navigate()
-        {
-            await App.Current.MainPage.Navigation.PushAsync(new RegisterPage());
-        }
+        //public async void Navigate()
+        //{
+        //    await App.Current.MainPage.Navigation.PushAsync(new RegisterPage());
+        //}
     }
 }

@@ -49,8 +49,8 @@ namespace TravelRecordApp
             }
             */
 
-            Post.Update(selectedPost);
-            await DisplayAlert("Success", "Your Travel Post was updated", "Ok");
+            if(await Post.Update(selectedPost))
+                await Navigation.PushAsync(new HomePage());
         }
 
         private async void deleteButton_Clicked(object sender, EventArgs e)
@@ -67,10 +67,9 @@ namespace TravelRecordApp
                     DisplayAlert("Failure", "Experience failed to be deleted", "Ok");
             }
             */
-            Post.Delete(selectedPost);
-            await DisplayAlert("Success", "Your Travel Post was deleted", "Ok");
-
-            await Navigation.PushAsync(new HomePage());
+            if (await Post.Delete(selectedPost))
+                await Navigation.PushAsync(new HomePage());
+            
         }
     }
 }

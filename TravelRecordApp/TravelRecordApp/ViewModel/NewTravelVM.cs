@@ -88,8 +88,8 @@ namespace TravelRecordApp.ViewModel
                         DisplayAlert("Failure", "Experience failed to be inserted", "Ok");
                 }*/
 
-                Post.Insert(post);
-                await App.Current.MainPage.DisplayAlert("Success", "Your Travel Post was added", "Ok");
+                if(await Post.Insert(post))
+                    await App.Current.MainPage.Navigation.PushAsync(new HomePage());
             }
             catch (NullReferenceException nre)
             {

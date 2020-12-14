@@ -21,6 +21,8 @@ namespace TravelRecordApp
 
             viewModel = new RegisterVM();
             BindingContext = viewModel;
+
+            // Xamarin.Forms.PlatformConfiguration.iOSSpecific.Page.SetUseSafeArea(this, false);
         }
     }
 }

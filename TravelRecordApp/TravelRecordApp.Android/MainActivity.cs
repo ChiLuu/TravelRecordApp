@@ -21,6 +21,7 @@ namespace TravelRecordApp.Droid
 
             base.OnCreate(savedInstanceState);
 
+            // global::Xamarin.Forms.Forms.SetFlags("FastRenderers_Experimental"); No longer required as of Xamarin.Forms 4.0
             Xamarin.Essentials.Platform.Init(this, savedInstanceState); // Required for Permission Plugin
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             Xamarin.FormsMaps.Init(this, savedInstanceState); // Add for maps to work
