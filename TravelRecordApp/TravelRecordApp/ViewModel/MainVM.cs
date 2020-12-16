@@ -25,8 +25,6 @@ namespace TravelRecordApp.ViewModel
                 OnPropertyChanged();
             } 
         }
-        // public LoginCommand LoginCommand { get; set; }
-        // public RegisterNavigationCommand RegisterNavigationCommand { get; set; }
         public Command LoginCommand { get; private set; }
         public Command RegisterNavigationCommand { get; private set; }
 
@@ -68,6 +66,7 @@ namespace TravelRecordApp.ViewModel
                 isBusy = value;
                 OnPropertyChanged();
                 LoginCommand.ChangeCanExecute();
+                RegisterNavigationCommand.ChangeCanExecute();
             }
         }
 
@@ -82,13 +81,34 @@ namespace TravelRecordApp.ViewModel
         {
             User = new Users();
             
-            RegisterNavigationCommand = new Command(
-                    async () => await App.Current.MainPage.Navigation.PushAsync(new RegisterPage()));
+            //  Command for: 
+            //      Register Button
+            //
+            //  On use: 
+            //      Navigate to a new Registration Page. 
 
+            //  Restrictions: 
+            //      Only if current page is not busy (IsBusy).
+            RegisterNavigationCommand = new Command(
+                    async () => await App.Current.MainPage.Navigation.PushAsync(new RegisterPage()), 
+                    ()=> !IsBusy);
+
+            //  Command for: 
+            //      Login Button
+            //
+            //  On use: 
+            //      Log user in.
+            //
+            //  Restrictions: 
+            //      If user exist, page is not busy, and user had enter an Email and Password.
             LoginCommand = new Command(
-                execute: () =>
+                execute: async () =>
                 {
-                    Login();
+                    IsBusy = true;
+                    bool canLogin = await Users.Login(User.Email, User.Password);
+                    if (canLogin)
+                        await App.Current.MainPage.Navigation.PushAsync(new HomePage());
+                    IsBusy = false;
                 },
                 canExecute: () =>
                 {
@@ -100,22 +120,5 @@ namespace TravelRecordApp.ViewModel
                         return true;
                 });
         }
-
-        public async void Login()
-        {
-            IsBusy = true;
-            bool canLogin = await Users.Login(User.Email, User.Password);
-            if (canLogin)
-                await App.Current.MainPage.Navigation.PushAsync(new HomePage());
-            else
-                await App.Current.MainPage.DisplayAlert("Error", "Email or password are incorrect", "Ok");
-
-            IsBusy = false;
-        }
-
-        //public async void Navigate()
-        //{
-        //    await App.Current.MainPage.Navigation.PushAsync(new RegisterPage());
-        //}
     }
 }

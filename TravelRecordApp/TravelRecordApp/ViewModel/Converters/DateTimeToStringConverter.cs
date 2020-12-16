@@ -19,7 +19,7 @@ namespace TravelRecordApp.ViewModel.Converters
             else if (difference.TotalSeconds < 60)
                 return $"{difference.TotalSeconds:0} seconds ago";
             else if (difference.TotalMinutes < 60)
-                return $"{difference.TotalMinutes:0} mings ago";
+                return $"{difference.TotalMinutes:0} mins ago";
             else if (difference.TotalHours < 24)
                 return $"{difference.TotalHours:0} hours ago";
             else

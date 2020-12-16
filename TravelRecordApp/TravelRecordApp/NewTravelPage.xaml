@@ -18,7 +18,7 @@
             <ListView x:Name="venueListView"
                       Margin="20, 5"
                       HorizontalOptions="FillAndExpand"
-                      SelectedItem="{Binding Venue, Mode=TwoWay}">
+                      SelectedItem="{Binding Venue}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -38,8 +38,8 @@
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-                
             </ListView>
+            <ActivityIndicator IsRunning="{Binding IsBusy}"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

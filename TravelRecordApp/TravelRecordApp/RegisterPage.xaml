@@ -12,6 +12,6 @@
         <Button x:Name="registerButton" Text="Register" Margin="0,50,0,0" Style="{StaticResource normalButton}"
                 Command="{Binding RegisterCommand}"
                 CommandParameter="{Binding User}"/>
-
+        <ActivityIndicator IsRunning="{Binding IsBusy}" />
     </StackLayout>
 </ContentPage>

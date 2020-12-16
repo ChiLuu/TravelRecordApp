@@ -1,22 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TravelRecordApp.ViewModel.Commands;
+using Xamarin.Forms;
 
 namespace TravelRecordApp.ViewModel
 {
     public class HomeVM
     {
-        public NavigationCommand NavCommand { get; set; }
+        public Command NavCommand { get; private set; }
 
         public HomeVM()
         {
-            NavCommand = new NavigationCommand(this);
-        }
-
-        public async void Navigate()
-        {
-            await App.Current.MainPage.Navigation.PushAsync(new NewTravelPage());
+            NavCommand = new Command(async () => await App.Current.MainPage.Navigation.PushAsync(new NewTravelPage()));
         }
     }
 }

@@ -3,17 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TravelRecordApp.PostDetailPage">
     <StackLayout Margin="10">
-        <Label x:Name="venueLabel" FontAttributes="Bold" FontSize="22"/>
-        <Label x:Name="categoryLabel" FontAttributes="Bold" TextColor="{StaticResource blueColor}"/>
-        <Label x:Name="addressLabel" FontAttributes="Bold" />
-        <Label x:Name="coordinatesLabel" FontAttributes="Bold" />
-        <Label x:Name="distanceLabel" FontAttributes="Bold" />
+        <Label x:Name="venueLabel" FontAttributes="Bold" FontSize="22"
+               Text="{Binding Post.VenueName}"/>
+        <Label x:Name="categoryLabel" FontAttributes="Bold" TextColor="{StaticResource blueColor}"
+               Text="{Binding Post.CategoryName}"/>
+        <Label x:Name="addressLabel" FontAttributes="Bold" 
+               Text="{Binding Post.Address}"/>
+        <Label x:Name="latCoordinatesLabel" FontAttributes="Bold" 
+               Text="{Binding Post.Latitude, StringFormat='Lat: {0:F2}'}"/>
+        <Label x:Name="lonCoordinatesLabel" FontAttributes="Bold" 
+               Text="{Binding Post.Longitude, StringFormat='Lon: {0:F2}'}"/>
+        <Label x:Name="distanceLabel" FontAttributes="Bold" 
+               Text="{Binding Post.Distance, StringFormat='{0} meters'}"/>
         <Entry x:Name="experienceEntry" Margin="0,20,0,0"
                 VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+                HorizontalOptions="CenterAndExpand" 
+               Text="{Binding Experience, Mode=TwoWay}"/>
         <Button x:Name="updateButton" Text="Update"
-                Clicked="updateButton_Clicked"/>
+                Command="{Binding UpdateCommand}"/>
         <Button x:Name="deleteButton" Text="Delete"
-                Clicked="deleteButton_Clicked"/>
+                Command="{Binding DeleteCommand}"/>
+        <ActivityIndicator IsRunning="{Binding IsBusy}"/>
     </StackLayout>
 </ContentPage>

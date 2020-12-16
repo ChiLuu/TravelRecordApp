@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using TravelRecordApp.Model;
+using Xamarin.Forms;
 
 namespace TravelRecordApp.ViewModel
 {
@@ -10,9 +11,20 @@ namespace TravelRecordApp.ViewModel
     {
         public ObservableCollection<Post> Posts { get; set; }
 
+        public Command DeleteCommand { get; private set; }
+        public Command NavigateCommand { get; private set; }
+
         public HistoryVM()
         {
             Posts = new ObservableCollection<Post>();
+
+            DeleteCommand = new Command<Post>(async (Post post) => 
+            {
+                if (await Post.Delete(post))
+                    UpdatePosts();
+            });
+            NavigateCommand = new Command<Post>(async (Post post) => 
+                await App.Current.MainPage.Navigation.PushAsync(new PostDetailPage(post)));
         }
         public async void UpdatePosts()
         {

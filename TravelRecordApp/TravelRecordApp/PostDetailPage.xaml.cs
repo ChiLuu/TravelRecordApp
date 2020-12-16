@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TravelRecordApp.Model;
+using TravelRecordApp.ViewModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -14,22 +15,17 @@ namespace TravelRecordApp
     public partial class PostDetailPage : ContentPage
     {
         Post selectedPost;
+        PostDetailVM viewModel;
         public PostDetailPage()
         {
             
         }
-        public PostDetailPage(Post selectedPost)
+        public PostDetailPage(Post post)
         {
             InitializeComponent();
 
-            this.selectedPost = selectedPost;
-
-            experienceEntry.Text = selectedPost.Experience;
-            venueLabel.Text = selectedPost.VenueName;
-            categoryLabel.Text = selectedPost.CategoryName;
-            addressLabel.Text = selectedPost.Address;
-            coordinatesLabel.Text = $"Lat: {selectedPost.Latitude}, Lon: {selectedPost.Longitude}";
-            distanceLabel.Text = $"{selectedPost.Distance} meters";
+            viewModel = new PostDetailVM(post);
+            BindingContext = viewModel;
         }
 
         private async void updateButton_Clicked(object sender, EventArgs e)

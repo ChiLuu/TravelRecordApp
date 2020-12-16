@@ -67,6 +67,7 @@ namespace TravelRecordApp.Model
 
             if (isEmailEmpty || isPasswordEmpty)
             {
+                await App.Current.MainPage.DisplayAlert("Error", "Email or password was not entered.", "Ok");
                 return false;
             }
             else
@@ -80,7 +81,11 @@ namespace TravelRecordApp.Model
                         return true;
                     }
                     else
+                    {
+                        await App.Current.MainPage.DisplayAlert("Error", "Email or password are incorrect", "Ok");
                         return false;
+                    }
+                        
                 }
                 catch (Exception ex)
                 {
@@ -89,7 +94,7 @@ namespace TravelRecordApp.Model
                 }
             }
         }
-        public static async void Register(Users user)
+        public static async Task<bool> Register(Users user)
         {
             if (user.Password != user.ConfirmPassword)
                 await App.Current.MainPage.DisplayAlert("Password Error", "Passwords does not match.", "Ok");
@@ -104,10 +109,11 @@ namespace TravelRecordApp.Model
                         // Get User table from web service and add user
                         await App.MobileService.GetTable<Users>().InsertAsync(user);
                         await App.Current.MainPage.DisplayAlert("Registered!", "Your account has been registered successfully.", "Ok");
-                        await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                        return true;
                     }
                     else
                         await App.Current.MainPage.DisplayAlert("User Exist", "The email is already registered.", "Ok");
+                        
                 }
                 catch (Exception ex)
                 {
@@ -115,7 +121,8 @@ namespace TravelRecordApp.Model
                     Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
                 }
             }
-            
+            return false;
+
         }
 
         private void OnPropertyChanged(string propertyName)

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 using TravelRecordApp.Model;
-using TravelRecordApp.ViewModel.Commands;
+using Xamarin.Forms;
 
 namespace TravelRecordApp.ViewModel
 {
@@ -17,7 +18,7 @@ namespace TravelRecordApp.ViewModel
             set 
             { 
                 user = value;
-                OnPropertyChanged("User");
+                OnPropertyChanged();
             }
         }
 
@@ -35,7 +36,7 @@ namespace TravelRecordApp.ViewModel
                     Password = this.Password,
                     ConfirmPassword = this.ConfirmPassword
                 };
-                OnPropertyChanged("Email");
+                OnPropertyChanged();
             }
         }
 
@@ -53,7 +54,7 @@ namespace TravelRecordApp.ViewModel
                     Password = this.Password,
                     ConfirmPassword = this.ConfirmPassword
                 };
-                OnPropertyChanged("Password");
+                OnPropertyChanged();
             }
         }
 
@@ -71,26 +72,62 @@ namespace TravelRecordApp.ViewModel
                     Password = this.Password,
                     ConfirmPassword = this.ConfirmPassword
                 };
-                OnPropertyChanged("ConfirmPassword");
+                OnPropertyChanged();
+            }
+        }
+
+        private bool isBusy;
+
+        public bool IsBusy
+        {
+            get { return isBusy; }
+            set 
+            { 
+                isBusy = value;
+                OnPropertyChanged();
+                RegisterCommand.ChangeCanExecute();
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public void OnPropertyChanged(string propertyName)
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public RegisterCommand RegisterCommand { get; set; }
+        public Command RegisterCommand { get; private set; }
         public RegisterVM()
         {
-            RegisterCommand = new RegisterCommand(this);
-        }
-
-        public void Register(Users user)
-        {
-            Users.Register(user);
+            //  Command for: 
+            //      Register Button
+            //
+            //  On use: 
+            //      Attempts to register a new user based on user's input.
+            //      If registration is successful then navigate user back to login page.
+            //
+            //  Restrictions: 
+            //      Active if the user name, password, and confirm password field is not empty 
+            //      and if current page is not busy (IsBusy).
+            RegisterCommand = new Command(
+                execute: async () => 
+                {
+                    IsBusy = true;
+                    if(await Users.Register(user))
+                        await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                    IsBusy = false;
+                },
+                canExecute: () =>
+                {
+                    if (user != null 
+                    && !string.IsNullOrEmpty(user.Password) 
+                    && !string.IsNullOrEmpty(user.ConfirmPassword)
+                    && !IsBusy)
+                        return true;
+                    else
+                        return false;
+                }
+            );
         }
     }
 }

@@ -27,19 +27,6 @@ namespace TravelRecordApp
         {
             base.OnAppearing();
             viewModel.UpdatePosts();
-
-            /* Local DB using SQLite method
-            using (SQLiteConnection conn = new SQLiteConnection(App.DatabaseLocation))
-            {
-                conn.CreateTable<Post>();
-                var posts = conn.Table<Post>().ToList();
-                postListView.ItemsSource = posts;
-            }
-            
-            postListView.ItemsSource = posts;
-            */
-
-
         }
 
         private void postListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
