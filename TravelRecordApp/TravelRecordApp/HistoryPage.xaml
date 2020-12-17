@@ -10,7 +10,10 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ListView x:Name="postListView"
-              ItemsSource="{Binding Posts}">
+              ItemsSource="{Binding Posts}"
+              IsPullToRefreshEnabled="True"
+              IsRefreshing="{Binding IsRefreshing}}"
+              RefreshCommand="{Binding RefreshCommand}">
         <ListView.ItemTemplate>
             <DataTemplate>
                 <TextCell Text="{Binding Experience}" 
