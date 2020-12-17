@@ -4,6 +4,8 @@ using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using EmailValidation;
+using System.Runtime.CompilerServices;
 
 namespace TravelRecordApp.Model
 {
@@ -17,7 +19,7 @@ namespace TravelRecordApp.Model
             set
             {
                 id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -28,7 +30,7 @@ namespace TravelRecordApp.Model
             set
             {
                 email = value;
-                OnPropertyChanged("Email");
+                OnPropertyChanged();
             }
         }
 
@@ -39,20 +41,10 @@ namespace TravelRecordApp.Model
             set
             {
                 password = value;
-                OnPropertyChanged("Password");
+                OnPropertyChanged();
             }
         }
 
-        private string confirmPassword;
-        public string ConfirmPassword
-        {
-            get { return confirmPassword; }
-            set
-            {
-                confirmPassword = value;
-                OnPropertyChanged("ConfirmPassword");
-            }
-        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         public static async Task<Users> GetUserByEmail(string email)
@@ -75,7 +67,7 @@ namespace TravelRecordApp.Model
                 try
                 {
                     var user = await Users.GetUserByEmail(email);
-                    if (user != null && user.Password == password)
+                    if (user != null && BCrypt.Net.BCrypt.EnhancedVerify(password, user.Password))
                     {
                         App.user = user;
                         return true;
@@ -96,8 +88,10 @@ namespace TravelRecordApp.Model
         }
         public static async Task<bool> Register(Users user)
         {
-            if (user.Password != user.ConfirmPassword)
-                await App.Current.MainPage.DisplayAlert("Password Error", "Passwords does not match.", "Ok");
+            if (!EmailValidator.Validate(user.Email))
+            {
+                await App.Current.MainPage.DisplayAlert("Invalid Email", "Please enter a valid Email.", "Ok");
+            }
             else
             {
                 try
@@ -106,6 +100,7 @@ namespace TravelRecordApp.Model
 
                     if (existingUser == null)
                     {
+                        user.password = BCrypt.Net.BCrypt.EnhancedHashPassword(user.password);
                         // Get User table from web service and add user
                         await App.MobileService.GetTable<Users>().InsertAsync(user);
                         await App.Current.MainPage.DisplayAlert("Registered!", "Your account has been registered successfully.", "Ok");
@@ -125,7 +120,7 @@ namespace TravelRecordApp.Model
 
         }
 
-        private void OnPropertyChanged(string propertyName)
+        private void OnPropertyChanged([CallerMemberName]string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

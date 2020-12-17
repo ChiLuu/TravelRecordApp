@@ -33,8 +33,7 @@ namespace TravelRecordApp.ViewModel
                 User = new Users()
                 {
                     Email = this.Email,
-                    Password = this.Password,
-                    ConfirmPassword = this.ConfirmPassword
+                    Password = this.Password
                 };
                 OnPropertyChanged();
             }
@@ -51,8 +50,7 @@ namespace TravelRecordApp.ViewModel
                 User = new Users()
                 {
                     Email = this.Email,
-                    Password = this.Password,
-                    ConfirmPassword = this.ConfirmPassword
+                    Password = this.Password
                 };
                 OnPropertyChanged();
             }
@@ -66,13 +64,8 @@ namespace TravelRecordApp.ViewModel
             set
             {
                 confirmPassword = value;
-                User = new Users()
-                {
-                    Email = this.Email,
-                    Password = this.Password,
-                    ConfirmPassword = this.ConfirmPassword
-                };
                 OnPropertyChanged();
+                RegisterCommand.ChangeCanExecute();
             }
         }
 
@@ -113,7 +106,9 @@ namespace TravelRecordApp.ViewModel
                 execute: async () => 
                 {
                     IsBusy = true;
-                    if(await Users.Register(user))
+                    if (user.Password != ConfirmPassword)
+                        await App.Current.MainPage.DisplayAlert("Password Error", "Passwords does not match.", "Ok");
+                    else if (await Users.Register(user))
                         await App.Current.MainPage.Navigation.PushAsync(new MainPage());
                     IsBusy = false;
                 },
@@ -121,7 +116,7 @@ namespace TravelRecordApp.ViewModel
                 {
                     if (user != null 
                     && !string.IsNullOrEmpty(user.Password) 
-                    && !string.IsNullOrEmpty(user.ConfirmPassword)
+                    && !string.IsNullOrEmpty(ConfirmPassword)
                     && !IsBusy)
                         return true;
                     else

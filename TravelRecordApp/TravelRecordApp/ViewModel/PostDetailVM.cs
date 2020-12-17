@@ -16,6 +16,7 @@ namespace TravelRecordApp.ViewModel
         public Command DeleteCommand { get; private set; }
         public Command UpdateCommand { get; private set; }
 
+        
         public Post Post
         {
             get { return post; }

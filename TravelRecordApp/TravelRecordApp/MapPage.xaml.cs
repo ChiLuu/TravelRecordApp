@@ -142,7 +142,7 @@ namespace TravelRecordApp
 
             // Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
             var center = new Xamarin.Forms.Maps.Position(position.Latitude, position.Longitude);
-            var mapSpan = new Xamarin.Forms.Maps.MapSpan(center, 0.3, 0.3);
+            var mapSpan = new Xamarin.Forms.Maps.MapSpan(center, 0.1, 0.1);
 
             locationsMap.MoveToRegion(mapSpan);
         }
