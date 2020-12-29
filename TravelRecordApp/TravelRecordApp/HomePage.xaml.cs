@@ -12,7 +12,7 @@ namespace TravelRecordApp
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class HomePage : TabbedPage
     {
-        HomeVM viewModel;
+        private readonly HomeVM viewModel;
         public HomePage()
         {
             InitializeComponent();

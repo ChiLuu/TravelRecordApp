@@ -12,7 +12,7 @@ namespace TravelRecordApp
 {
     public partial class MainPage : ContentPage
     {
-        MainVM viewModel;
+        private readonly MainVM viewModel;
         public MainPage()
         {
             InitializeComponent();

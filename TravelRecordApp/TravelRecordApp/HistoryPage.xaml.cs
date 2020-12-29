@@ -14,7 +14,7 @@ namespace TravelRecordApp
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class HistoryPage : ContentPage
     {
-        HistoryVM viewModel;
+        private readonly HistoryVM viewModel;
         public HistoryPage()
         {
             InitializeComponent();
@@ -27,16 +27,6 @@ namespace TravelRecordApp
         {
             base.OnAppearing();
             viewModel.UpdatePosts();
-        }
-
-        private void postListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
-        {
-            var selectedPost = postListView.SelectedItem as Post;
-
-            if(selectedPost != null)
-            {
-                Navigation.PushAsync(new PostDetailPage(selectedPost));
-            }
         }
     }
 }

@@ -15,7 +15,7 @@ namespace TravelRecordApp
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class NewTravelPage : ContentPage
     {
-        NewTravelVM viewModel;
+        private readonly NewTravelVM viewModel;
         public NewTravelPage()
         {
             InitializeComponent();
